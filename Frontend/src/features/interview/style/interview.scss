@@ -1,0 +1,534 @@
+// ── Shared Variables ─────────────────────────────────────────────────────────
+$bg-page:        #070b16;
+$bg-card:        #0c1122;
+$bg-panel:       #101728;
+$bg-input:       #080d1c;
+$border-color:   #1c2640;
+$text-primary:   #eaf0fb;
+$text-muted:     #6b7a99;
+$accent:         #ff2d78;
+$font-stack:     'Plus Jakarta Sans', 'Poppins', system-ui, sans-serif;
+$font-heading:   'Poppins', 'Plus Jakarta Sans', system-ui, sans-serif;
+
+$severity-high:   #ff4d4d;
+$severity-medium: #f5a623;
+$severity-low:    #3fb950;
+
+// ── Page Shell ───────────────────────────────────────────────────────────────
+// flex-direction: column stacks Navbar on top of the layout card
+.interview-page {
+    width: 100%;
+    min-height: 100vh;
+    background-color: $bg-page;
+    color: $text-primary;
+    font-family: $font-stack;
+    display: flex;
+    flex-direction: column;
+}
+
+// ── 3-Column Layout ──────────────────────────────────────────────────────────
+.interview-layout {
+    display: flex;
+    flex: 1;
+    width: 100%;
+    min-height: calc(100vh - 60px); // fill below navbar
+    border-top: 1px solid $border-color;
+}
+
+.interview-divider {
+    width: 1px;
+    background-color: $border-color;
+    flex-shrink: 0;
+}
+
+// ── Left Nav ─────────────────────────────────────────────────────────────────
+.interview-nav {
+    width: 240px;
+    flex-shrink: 0;
+    padding: 2rem 1rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.25rem;
+    background-color: $bg-card;
+    border-right: 1px solid $border-color;
+    position: sticky;
+    top: 60px;
+    height: calc(100vh - 60px);
+
+    .nav-content {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    &__label {
+        font-size: 0.68rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: $text-muted;
+        padding: 0 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+
+    &__item {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        width: 100%;
+        padding: 0.65rem 0.75rem;
+        background: none;
+        border: none;
+        border-radius: 0.5rem;
+        color: $text-muted;
+        font-family: $font-stack;
+        font-size: 0.875rem;
+        cursor: pointer;
+        text-align: left;
+        transition: background-color 0.15s, color 0.15s;
+
+        &:hover {
+            background-color: rgba($text-primary, 0.04);
+            color: $text-primary;
+        }
+
+        &--active {
+            background-color: rgba($accent, 0.1);
+            color: $accent;
+            font-weight: 500;
+
+            .interview-nav__icon svg {
+                stroke: $accent;
+            }
+        }
+    }
+
+    &__icon {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+    // Download Resume button lives in the nav footer
+    .button.primary-button {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.65rem 1rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        font-family: $font-stack;
+        border-radius: 0.6rem;
+        background: linear-gradient(135deg, $accent, darken($accent, 12%));
+        color: white;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 14px rgba($accent, 0.3);
+        transition: opacity 0.2s, transform 0.1s;
+
+        &:hover { opacity: 0.9; }
+        &:active { transform: scale(0.97); }
+    }
+}
+
+// ── Center Content ────────────────────────────────────────────────────────────
+.interview-content {
+    flex: 1;
+    padding: 2rem 2.5rem;
+    overflow-y: auto;
+    max-height: calc(100vh - 60px);
+    scroll-behavior: smooth;
+
+    &::-webkit-scrollbar { width: 5px; }
+    &::-webkit-scrollbar-track { background: transparent; }
+    &::-webkit-scrollbar-thumb {
+        background: $border-color;
+        border-radius: 3px;
+    }
+}
+
+.content-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid $border-color;
+
+    h2 {
+        font-family: $font-heading;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: $text-primary;
+        margin: 0;
+        letter-spacing: -0.02em;
+    }
+
+    &__count {
+        font-size: 0.75rem;
+        color: $text-muted;
+        background-color: $bg-panel;
+        padding: 0.2rem 0.65rem;
+        border-radius: 2rem;
+        border: 1px solid $border-color;
+    }
+}
+
+// ── Question Cards ────────────────────────────────────────────────────────────
+.q-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.q-card {
+    background-color: $bg-card;
+    border: 1px solid $border-color;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+
+    &:hover {
+        border-color: rgba($accent, 0.25);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        transform: translateY(-1px);
+    }
+
+    &__header {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 1rem 1.1rem;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    &__index {
+        flex-shrink: 0;
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: $accent;
+        background-color: rgba($accent, 0.1);
+        border: 1px solid rgba($accent, 0.2);
+        border-radius: 0.3rem;
+        padding: 0.15rem 0.45rem;
+        margin-top: 2px;
+        letter-spacing: 0.02em;
+    }
+
+    &__question {
+        flex: 1;
+        margin: 0;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: $text-primary;
+        line-height: 1.55;
+    }
+
+    &__chevron {
+        flex-shrink: 0;
+        color: $text-muted;
+        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        margin-top: 2px;
+
+        &--open {
+            transform: rotate(180deg);
+            color: $accent;
+        }
+    }
+
+    &__body {
+        padding: 0 1.1rem 1.1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+        border-top: 1px solid $border-color;
+        padding-top: 0.9rem;
+        animation: fadeSlideIn 0.2s ease;
+    }
+
+    &__section {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+
+        p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: lighten($text-muted, 15%);
+            line-height: 1.65;
+        }
+    }
+
+    &__tag {
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        padding: 0.15rem 0.5rem;
+        border-radius: 0.25rem;
+        width: fit-content;
+
+        &--intention {
+            color: #a78bfa;
+            background-color: rgba(#a78bfa, 0.1);
+            border: 1px solid rgba(#a78bfa, 0.2);
+        }
+
+        &--answer {
+            color: $severity-low;
+            background-color: rgba($severity-low, 0.1);
+            border: 1px solid rgba($severity-low, 0.2);
+        }
+    }
+}
+
+@keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+// ── Road Map ──────────────────────────────────────────────────────────────────
+.roadmap-list {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: 28px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(to bottom, $accent, rgba($accent, 0.05));
+        border-radius: 1px;
+    }
+}
+
+.roadmap-day {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.85rem 0 0.85rem 3.5rem;
+    position: relative;
+    transition: opacity 0.2s;
+
+    &:hover { opacity: 0.95; }
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: 21px;
+        top: 1.1rem;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background-color: $bg-page;
+        border: 2px solid $accent;
+        box-shadow: 0 0 8px rgba($accent, 0.4);
+    }
+
+    &__header {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+    &__badge {
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: $accent;
+        background-color: rgba($accent, 0.1);
+        border: 1px solid rgba($accent, 0.25);
+        padding: 0.1rem 0.5rem;
+        border-radius: 2rem;
+    }
+
+    &__focus {
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: $text-primary;
+    }
+
+    &__tasks {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+
+        li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            font-size: 0.845rem;
+            color: lighten($text-muted, 12%);
+            line-height: 1.55;
+        }
+    }
+
+    &__bullet {
+        flex-shrink: 0;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background-color: $text-muted;
+        margin-top: 8px;
+    }
+}
+
+// ── Right Sidebar ─────────────────────────────────────────────────────────────
+.interview-sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    background-color: $bg-card;
+    border-left: 1px solid $border-color;
+    position: sticky;
+    top: 60px;
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+}
+
+.sidebar-divider {
+    height: 1px;
+    background-color: $border-color;
+}
+
+// ── Match Score Ring ──────────────────────────────────────────────────────────
+.match-score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+
+    &__label {
+        font-size: 0.68rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: $text-muted;
+        margin: 0;
+        align-self: flex-start;
+    }
+
+    &__ring {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border: 5px solid;
+        position: relative;
+
+        &.score--high {
+            border-color: $severity-low;
+            box-shadow: 0 0 20px rgba($severity-low, 0.25), 0 0 40px rgba($severity-low, 0.1);
+        }
+        &.score--mid {
+            border-color: $severity-medium;
+            box-shadow: 0 0 20px rgba($severity-medium, 0.25), 0 0 40px rgba($severity-medium, 0.1);
+        }
+        &.score--low {
+            border-color: $severity-high;
+            box-shadow: 0 0 20px rgba($severity-high, 0.25), 0 0 40px rgba($severity-high, 0.1);
+        }
+    }
+
+    &__value {
+        font-family: $font-heading;
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: $text-primary;
+        line-height: 1;
+        letter-spacing: -0.03em;
+    }
+
+    &__pct {
+        font-size: 0.75rem;
+        color: $text-muted;
+        margin-top: -2px;
+    }
+
+    &__sub {
+        margin: 0;
+        font-size: 0.75rem;
+        color: $severity-low;
+        text-align: center;
+        font-weight: 500;
+    }
+}
+
+// ── Skill Gaps ────────────────────────────────────────────────────────────────
+.skill-gaps {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    &__label {
+        font-size: 0.68rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: $text-muted;
+        margin: 0;
+    }
+
+    &__list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+}
+
+.skill-tag {
+    font-size: 0.775rem;
+    font-weight: 500;
+    padding: 0.3rem 0.75rem;
+    border-radius: 2rem;
+    border: 1px solid;
+    cursor: default;
+    transition: transform 0.15s;
+
+    &:hover { transform: scale(1.04); }
+
+    &--high {
+        color: $severity-high;
+        background-color: rgba($severity-high, 0.08);
+        border-color: rgba($severity-high, 0.25);
+    }
+    &--medium {
+        color: $severity-medium;
+        background-color: rgba($severity-medium, 0.08);
+        border-color: rgba($severity-medium, 0.25);
+    }
+    &--low {
+        color: $severity-low;
+        background-color: rgba($severity-low, 0.08);
+        border-color: rgba($severity-low, 0.25);
+    }
+}
+
+// ── Job Title in Sidebar ──────────────────────────────────────────────────────
+.sidebar-job-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: $text-primary;
+    line-height: 1.4;
+    padding: 0.75rem 1rem;
+    background: rgba($accent, 0.06);
+    border: 1px solid rgba($accent, 0.15);
+    border-radius: 0.6rem;
+    text-align: center;
+}
